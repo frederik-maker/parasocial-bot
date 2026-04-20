@@ -1,5 +1,7 @@
 # Parasocial
 
+**Live: [frederik-maker.github.io/parasocial-bot](https://frederik-maker.github.io/parasocial-bot/) · Bot: [@FrankRealBot](https://t.me/FrankRealBot) · Deck: [PDF](https://frederik-maker.github.io/parasocial-bot/deck.pdf)**
+
 A Telegram bot that lets you follow "smart money" wallets onchain, scores their
 credibility, and with one tap mirrors their trades through your own wallet.
 
