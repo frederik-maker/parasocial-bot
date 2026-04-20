@@ -61,8 +61,8 @@ export function registerWalletCommands(bot: Bot): void {
       lines.push(`*Your Solana deposit address*`, `\`${sol.address}\``, ``);
     }
     lines.push(
-      `Send *USDC* on one of the allowed chains below.`,
-      `You'll also need a tiny bit of native gas (ETH / SOL) on that chain.`,
+      `Send *USDC* — or just *ETH / SOL* — to your address on any allowed chain.`,
+      `The bot picks the best source at trade time; a tiny gas reserve is kept aside.`,
       ``,
       evmChainsText,
     );

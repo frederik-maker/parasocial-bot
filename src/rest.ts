@@ -159,3 +159,41 @@ export async function resolveUsdcFungibleId(chain: string): Promise<string> {
   if (!hit) throw new Error(`USDC fungible not found on ${chain}`);
   return hit.id;
 }
+
+/**
+ * Resolve the native gas token's fungible ID on a chain (ETH/SOL/POL/etc).
+ */
+export async function resolveNativeFungibleId(
+  chain: string,
+  symbol: string,
+): Promise<string> {
+  const hit = await findFungibleBySymbol(symbol, chain);
+  if (!hit) throw new Error(`Native ${symbol} fungible not found on ${chain}`);
+  return hit.id;
+}
+
+// ── USD price fetcher (short cache) ──────────────────────
+
+interface FungibleDetail {
+  data: {
+    attributes: {
+      symbol: string;
+      market_data?: { price?: number };
+    };
+  };
+}
+
+const priceCache = new Map<string, { price: number; at: number }>();
+const PRICE_TTL_MS = 60_000;
+
+export async function getTokenPriceUsd(fungibleId: string): Promise<number> {
+  const cached = priceCache.get(fungibleId);
+  if (cached && Date.now() - cached.at < PRICE_TTL_MS) return cached.price;
+  const json = await get<FungibleDetail>(`/fungibles/${fungibleId}`);
+  const price = json.data.attributes.market_data?.price;
+  if (!price || !Number.isFinite(price) || price <= 0) {
+    throw new Error(`Zerion returned no price for fungible ${fungibleId}`);
+  }
+  priceCache.set(fungibleId, { price, at: Date.now() });
+  return price;
+}
