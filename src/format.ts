@@ -44,7 +44,7 @@ export function alertMessage(opts: {
     ``,
     `*Their stats* ${opts.score.tier} _${opts.score.label}_ (score ${opts.score.score.toFixed(0)})`,
     `• ${fmtPct(opts.score.realizedPnLPercent)} realized PnL`,
-    `• ${Math.round(opts.score.winRate * 100)}% win rate (${opts.score.sampleSize} assets w/ both sides)`,
+    `• Win rate: ${opts.score.sampleSize >= 3 ? Math.round(opts.score.winRate * 100) + "% (" + opts.score.sampleSize + " assets)" : "n/a"}`,
     assetStats,
     `• Last 5: ${lastFive}`,
   ].join("\n");
@@ -59,10 +59,9 @@ export function scoreBreakdown(score: CredibilityScore, address: string): string
     `*Breakdown*`,
     `• Realized PnL: *${fmtPct(score.realizedPnLPercent)}* _(primary signal — closed trades only)_`,
     `• Total PnL: ${fmtPct(score.overallPnLPercent)} _(includes unrealized bags)_`,
-    `• Overall win rate: ${Math.round(score.winRate * 100)}% (${score.sampleSize} assets w/ both sides)`,
-    `• Asset-specific win rate: ${score.assetWinRate === null ? "n/a" : Math.round(score.assetWinRate * 100) + "%"}`,
-    `• Recency bias: ${(score.recencyBonus * 100).toFixed(0)}`,
-    `• Last 5 outcomes: ${score.lastFiveOutcomes.join("") || "—"}`,
+    `• Win rate: ${score.sampleSize >= 3 ? Math.round(score.winRate * 100) + "% (" + score.sampleSize + " assets)" : "n/a (< 3 assets with both sides)"}`,
+    `• Asset win rate: ${score.assetWinRate === null || score.sampleSize < 3 ? "n/a" : Math.round(score.assetWinRate * 100) + "%"}`,
+    `• Recent exits: ${score.lastFiveOutcomes.join("") || "none in sample"}`,
   ];
   if (score.flags.length > 0) {
     lines.push("", `⚠️ _${score.flags.join("; ")}_`);

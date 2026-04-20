@@ -182,17 +182,22 @@ export async function computeCredibility(input: CredibilityInput): Promise<Credi
   const recency = recencyBonus(trades);
   const recencyNormalized = (recency + 1) / 2;
 
+  // Use neutral 0.5 for win rate when sample is too small to be meaningful.
+  const effectiveWinRate = sample >= 3 ? winRate : 0.5;
+  const effectiveAssetWinRate = assetWinRate !== null && sample >= 3 ? assetWinRate : effectiveWinRate;
+
   const score =
     (SCORE_WEIGHTS.pnl * normalizedPnl +
-      SCORE_WEIGHTS.winRate * winRate +
-      SCORE_WEIGHTS.assetWinRate * (assetWinRate ?? winRate) +
+      SCORE_WEIGHTS.winRate * effectiveWinRate +
+      SCORE_WEIGHTS.assetWinRate * effectiveAssetWinRate +
       SCORE_WEIGHTS.recency * recencyNormalized) *
     100;
 
   const tier = toTier(score);
 
+  // Only exits carry meaningful outcome signal — buys are all "➖" and add noise.
   const lastFive = trades
-    .filter((t) => t.asset && !IGNORE_SYMBOLS.has(t.asset.toUpperCase()))
+    .filter((t) => t.direction === "sell" && t.asset && !IGNORE_SYMBOLS.has(t.asset.toUpperCase()))
     .slice(0, 5)
     .map(outcomeFor);
 
