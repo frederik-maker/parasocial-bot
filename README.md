@@ -66,7 +66,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 > **Never rotate `MASTER_SECRET` after users have funded wallets** — you'd
 > lose the ability to decrypt their keys. Back up `.env` like a production DB.
 
-### 3. Run
+### 3. Run locally
 
 ```bash
 npm run dev     # TS + hot reload
@@ -75,6 +75,22 @@ npm run build && npm start
 ```
 
 That's it. No CLI wallets, no agent tokens, no onchain setup.
+
+### 4. Deploy (Railway)
+
+This repo deploys to [Railway](https://railway.app) out of the box — the
+default `npm start` + `better-sqlite3` combo just works.
+
+1. **New Project → Deploy from GitHub repo** → pick this repo
+2. **Variables**: paste every `KEY=value` from your local `.env`
+3. **+ Create → Volume** attached to the service, mount path `/data`
+4. Set `DB_PATH=/data/parasocial.db` so SQLite lives on the persistent volume
+   (critical — without this you lose user wallets on every redeploy)
+5. Push to `main` → Railway auto-deploys
+
+Only one Telegram long-poller can run at a time. If you keep a local dev
+instance alive, kill it before the Railway deploy goes live (or your bot
+will 409-conflict with itself).
 
 ## Quickstart — user (in Telegram)
 
