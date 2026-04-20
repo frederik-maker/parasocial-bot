@@ -32,21 +32,13 @@ export function alertMessage(opts: {
   const verb = opts.direction === "buy" ? "bought" : "sold";
   const emoji = opts.direction === "buy" ? "🟢" : "🔴";
   const name = opts.label ?? shortAddr(opts.address);
-  const lastFive = opts.score.lastFiveOutcomes.length > 0 ? opts.score.lastFiveOutcomes.join("") : "—";
-
-  const assetStats = opts.score.assetWinRate !== null
-    ? `• ${Math.round(opts.score.assetWinRate * 100)}% win rate on ${opts.trade.asset} positions`
-    : `• ${opts.trade.asset} history: insufficient sample`;
-
   return [
     `🧠 *${escapeMd(name)}* just ${verb} ${emoji} *${escapeMd(opts.trade.asset)}*`,
     `Amount: *${fmtUsd(opts.trade.usdValue)}* on ${opts.trade.chain}`,
     ``,
-    `*Their stats* ${opts.score.tier} _${opts.score.label}_ (score ${opts.score.score.toFixed(0)})`,
+    `*Their stats* ${opts.score.tier} _${opts.score.label}_`,
     `• ${fmtPct(opts.score.realizedPnLPercent)} realized PnL`,
-    `• Win rate: ${opts.score.sampleSize >= 3 ? Math.round(opts.score.winRate * 100) + "% (" + opts.score.sampleSize + " assets)" : "n/a"}`,
-    assetStats,
-    `• Last 5: ${lastFive}`,
+    `• ${fmtPct(opts.score.overallPnLPercent)} total PnL`,
   ].join("\n");
 }
 
@@ -54,17 +46,13 @@ export function scoreBreakdown(score: CredibilityScore, address: string): string
   const lines = [
     `*Credibility report* — ${shortAddr(address)}`,
     ``,
-    `${score.tier} *${score.label}* — score *${score.score.toFixed(0)}/100*`,
+    `${score.tier} *${score.label}*`,
     ``,
-    `*Breakdown*`,
-    `• Realized PnL: *${fmtPct(score.realizedPnLPercent)}* _(primary signal — closed trades only)_`,
-    `• Total PnL: ${fmtPct(score.overallPnLPercent)} _(includes unrealized bags)_`,
-    `• Win rate: ${score.sampleSize >= 3 ? Math.round(score.winRate * 100) + "% (" + score.sampleSize + " assets)" : "n/a (< 3 assets with both sides)"}`,
-    `• Asset win rate: ${score.assetWinRate === null || score.sampleSize < 3 ? "n/a" : Math.round(score.assetWinRate * 100) + "%"}`,
-    `• Recent exits: ${score.lastFiveOutcomes.join("") || "none in sample"}`,
+    `• Realized PnL: *${fmtPct(score.realizedPnLPercent)}*`,
+    `• Total PnL: ${fmtPct(score.overallPnLPercent)}`,
   ];
   if (score.flags.length > 0) {
-    lines.push("", `⚠️ _${score.flags.join("; ")}_`);
+    lines.push("", `_${score.flags.join("; ")}_`);
   }
   return lines.join("\n");
 }

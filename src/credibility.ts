@@ -94,10 +94,11 @@ function recencyBonus(trades: DetectedTrade[]): number {
   return weightSum === 0 ? 0 : Math.max(-1, Math.min(1, weighted / weightSum));
 }
 
-function toTier(score: number): CredibilityScore["tier"] {
-  if (score >= 75) return "🔥";
-  if (score >= 50) return "💎";
-  if (score >= 25) return "🤔";
+function toTier(realizedPct: number | null): CredibilityScore["tier"] {
+  const pct = realizedPct ?? 0;
+  if (pct >= 100) return "🔥";
+  if (pct >= 20) return "💎";
+  if (pct >= 0) return "🤔";
   return "💀";
 }
 
@@ -193,7 +194,7 @@ export async function computeCredibility(input: CredibilityInput): Promise<Credi
       SCORE_WEIGHTS.recency * recencyNormalized) *
     100;
 
-  const tier = toTier(score);
+  const tier = toTier(primaryPct);
 
   // Only exits carry meaningful outcome signal — buys are all "➖" and add noise.
   const lastFive = trades
