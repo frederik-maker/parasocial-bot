@@ -33,9 +33,10 @@
         <span class="brand-name">Parasocial</span>
       </a>
       <div class="nav-links">
+        <a href="#zerion">Zerion CLI</a>
         <a href="#how">How it works</a>
         <a href="#architecture">Architecture</a>
-        <a href="#policies">Policies</a>
+        <a href="./deck.pdf" target="_blank" rel="noopener">Deck ↗</a>
         <a class="btn btn-sm" href="https://github.com/frederik-maker/parasocial-bot" target="_blank" rel="noopener">GitHub ↗</a>
       </div>
     </nav>
@@ -45,7 +46,7 @@
       <section class="hero">
         <div class="eyebrow">
           <span class="dot"></span>
-          Live on Base + Solana · Real onchain txs
+          Built on <strong>Zerion CLI</strong>  ·  Live on Base + Solana  ·  Real onchain txs
         </div>
         <h1 class="display">
           Copy smart money onchain.<br />
@@ -62,6 +63,9 @@
           </a>
           <a class="btn btn-ghost" href="https://github.com/frederik-maker/parasocial-bot" target="_blank" rel="noopener">
             View on GitHub ↗
+          </a>
+          <a class="btn btn-ghost" href="./deck.pdf" target="_blank" rel="noopener">
+            View deck (PDF) ↗
           </a>
         </div>
 
@@ -100,6 +104,51 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BUILT ON ZERION -->
+      <section id="zerion" class="zerion">
+        <div class="section-head">
+          <span class="kicker">Built on Zerion CLI</span>
+          <h2 class="h2">Forked the CLI, then layered.</h2>
+          <p class="lede lede-tight">
+            Zerion CLI is the execution engine — we route every swap through
+            <span class="mono">/swap/offers</span>, sign locally with the user's
+            key, and carry Zerion's default commission. On top of that we built
+            per-user custody, credibility scoring, a Telegram front-end, and a
+            DCA scheduler.
+          </p>
+        </div>
+        <div class="zerion-split">
+          <div class="z-col">
+            <div class="z-label">From Zerion CLI</div>
+            <dl class="z-list">
+              <dt>Swap routing</dt>
+              <dd>/swap/offers endpoint for quotes and calldata</dd>
+              <dt>Wallet analysis</dt>
+              <dd>history, pnl, portfolio, positions</dd>
+              <dt>Solana tx format</dt>
+              <dd>versioned and legacy transaction deserialization</dd>
+            </dl>
+          </div>
+          <div class="z-col z-col-accent">
+            <div class="z-label z-label-accent">What we layered on top</div>
+            <dl class="z-list">
+              <dt>Per-user custodial wallets</dt>
+              <dd>EVM + Solana, AES-256-GCM encrypted, scrypt-derived per user</dd>
+              <dt>Credibility scoring engine</dt>
+              <dd>realized PnL + overall &amp; asset win rate + recency, with dust-inflation flagging</dd>
+              <dt>Telegram interface</dt>
+              <dd>grammy + runner for concurrent handlers</dd>
+              <dt>DCA scheduler</dt>
+              <dd>30-second tick, persistent, policy-gated every run</dd>
+              <dt>Scoped policy engine</dt>
+              <dd>six caps, one <span class="mono">checkPolicy()</span> gate — no bypass</dd>
+              <dt>Unified buyAssetWithUsdc()</dt>
+              <dd>one primitive for mirror taps and DCA ticks</dd>
+            </dl>
           </div>
         </div>
       </section>
@@ -282,6 +331,9 @@
           <a class="btn btn-ghost" href="https://t.me/FrankRealBot" target="_blank" rel="noopener">
             Try @FrankRealBot
           </a>
+          <a class="btn btn-ghost" href="./deck.pdf" target="_blank" rel="noopener">
+            View deck ↗
+          </a>
         </div>
       </section>
     </main>
@@ -293,6 +345,8 @@
           <a href="https://github.com/frederik-maker/parasocial-bot">GitHub</a>
           &nbsp;·&nbsp;
           <a href="https://t.me/FrankRealBot">Telegram</a>
+          &nbsp;·&nbsp;
+          <a href="./deck.pdf" target="_blank" rel="noopener">Deck</a>
         </span>
       </div>
     </footer>

@@ -1073,15 +1073,15 @@ function footerLine(slide) {
     15,
   );
 
-  // Three link cards
+  // Link cards
   const cardY = 3.8;
   const cardH = 2.0;
-  const cardW = (SLIDE_W - 1.4 - 0.6) / 3;
   const cards = [
     { label: "TELEGRAM", v: "t.me/FrankRealBot" },
     { label: "GITHUB", v: "github.com/frederik-maker/parasocial-bot" },
-    { label: "DEMO VIDEO", v: "[ video link ]" },
+    { label: "WEBSITE", v: "frederik-maker.github.io/parasocial-bot" },
   ];
+  const cardW = (SLIDE_W - 1.4 - 0.6) / cards.length;
   cards.forEach((c, i) => {
     const x = 0.7 + i * (cardW + 0.3);
     s.addShape(pres.shapes.RECTANGLE, {
