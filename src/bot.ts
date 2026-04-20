@@ -31,7 +31,7 @@ bot.use(async (ctx, next) => {
   await next();
 });
 
-const ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
+const ADDR_RE = /^(0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})$/;
 
 function assertAllowedUser(userId: number | undefined): boolean {
   if (config.adminUserIds.length === 0) return true;
@@ -91,7 +91,7 @@ bot.command("watch", async (ctx) => {
   const addr = parts[0];
   const label = parts.slice(1).join(" ") || null;
   if (!addr || !ADDR_RE.test(addr)) {
-    await ctx.reply("Usage: `/watch 0xADDRESS [label]`", { parse_mode: "Markdown" });
+    await ctx.reply("Usage: `/watch <0xEVM or SolanaAddress> [label]`", { parse_mode: "Markdown" });
     return;
   }
   addWatch(ctx.from!.id, addr, label);
@@ -105,7 +105,7 @@ bot.command("unwatch", async (ctx) => {
   if (!assertAllowedUser(ctx.from?.id)) return;
   const addr = (ctx.match ?? "").trim();
   if (!ADDR_RE.test(addr)) {
-    await ctx.reply("Usage: `/unwatch 0xADDRESS`", { parse_mode: "Markdown" });
+    await ctx.reply("Usage: `/unwatch <0xEVM or SolanaAddress>`", { parse_mode: "Markdown" });
     return;
   }
   const removed = removeWatch(ctx.from!.id, addr);
@@ -127,7 +127,7 @@ bot.command("stats", async (ctx) => {
   if (!assertAllowedUser(ctx.from?.id)) return;
   const addr = (ctx.match ?? "").trim();
   if (!ADDR_RE.test(addr)) {
-    await ctx.reply("Usage: `/stats 0xADDRESS`", { parse_mode: "Markdown" });
+    await ctx.reply("Usage: `/stats <0xEVM or SolanaAddress>`", { parse_mode: "Markdown" });
     return;
   }
   await ctx.reply("Crunching their last 30 trades…");
