@@ -59,30 +59,23 @@ export function extractTrades(txs: Transaction[]): DetectedTrade[] {
  * focuses on closed-trade wins only).
  */
 function closedTradeWinRate(trades: DetectedTrade[]): { winRate: number; sample: number } {
-  const byAsset = new Map<string, DetectedTrade[]>();
+  // Net USD flow per asset: if total USD received from selling > total USD spent buying
+  // for the same asset, it's a win. Works even when only one side of a pair is in the window.
+  const byAsset = new Map<string, { usdIn: number; usdOut: number }>();
   for (const t of trades) {
-    if (!byAsset.has(t.asset)) byAsset.set(t.asset, []);
-    byAsset.get(t.asset)!.push(t);
+    const acc = byAsset.get(t.asset) ?? { usdIn: 0, usdOut: 0 };
+    if (t.direction === "buy") acc.usdIn += t.usdValue;
+    else acc.usdOut += t.usdValue;
+    byAsset.set(t.asset, acc);
   }
-
-  let wins = 0;
-  let closed = 0;
-  for (const list of byAsset.values()) {
-    // Sort oldest-first.
-    list.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
-    const buys: DetectedTrade[] = [];
-    for (const tr of list) {
-      if (tr.direction === "buy") buys.push(tr);
-      else if (tr.direction === "sell" && buys.length > 0) {
-        const entry = buys.shift()!;
-        closed++;
-        const entryPrice = entry.quantity > 0 ? entry.usdValue / entry.quantity : 0;
-        const exitPrice = tr.quantity > 0 ? tr.usdValue / tr.quantity : 0;
-        if (exitPrice > entryPrice) wins++;
-      }
+  let wins = 0, total = 0;
+  for (const { usdIn, usdOut } of byAsset.values()) {
+    if (usdIn > 0 && usdOut > 0) {
+      total++;
+      if (usdOut >= usdIn) wins++;
     }
   }
-  return { winRate: closed === 0 ? 0 : wins / closed, sample: closed };
+  return { winRate: total === 0 ? 0 : wins / total, sample: total };
 }
 
 function recencyBonus(trades: DetectedTrade[]): number {
@@ -138,7 +131,7 @@ function outcomeFor(trade: DetectedTrade): "✅" | "❌" | "➖" {
 }
 
 export async function computeCredibility(input: CredibilityInput): Promise<CredibilityScore> {
-  const limit = input.sampleSize ?? 30;
+  const limit = input.sampleSize ?? 100;
   const [txs, pnl] = await Promise.all([
     getTransactionsRest(input.address, limit).catch((err) => {
       logger.warn(`getTransactionsRest failed for ${input.address}: ${err instanceof Error ? err.message : err}`);

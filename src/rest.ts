@@ -72,7 +72,7 @@ export interface RestPnl {
 }
 
 export async function getPnlRest(address: Address): Promise<RestPnl> {
-  return get<RestPnl>(`/wallets/${address.toLowerCase()}/pnl`);
+  return get<RestPnl>(`/wallets/${normalizeAddr(address)}/pnl`);
 }
 
 // ── token discovery ───────────────────────────────────────
@@ -195,8 +195,12 @@ interface RestTx {
 
 import type { Transaction } from "./types.js";
 
-export async function getTransactionsRest(address: string, limit = 30): Promise<Transaction[]> {
-  const json = await get<{ data: RestTx[] }>(`/wallets/${address.toLowerCase()}/transactions`, {
+function normalizeAddr(address: string): string {
+  return address.startsWith("0x") ? address.toLowerCase() : address;
+}
+
+export async function getTransactionsRest(address: string, limit = 100): Promise<Transaction[]> {
+  const json = await get<{ data: RestTx[] }>(`/wallets/${normalizeAddr(address)}/transactions`, {
     "page[size]": limit,
     "filter[trash]": "only_non_trash",
   });
