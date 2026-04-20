@@ -75,11 +75,14 @@ async function runCliNow<T>(args: string[], opts: RunOpts = {}): Promise<T> {
 
     child.on("close", (code) => {
       clearTimeout(timer);
-      const text = stdout.trim() || stderr.trim();
-      if (!text) {
+      const raw = stdout.trim() || stderr.trim();
+      if (!raw) {
         reject(new ZerionError("empty_output", `zerion ${args[0]} exited with code ${code} and no output`));
         return;
       }
+      // Strip npm warnings/notices that bleed into stdout when NODE_ENV=production.
+      const jsonStart = raw.search(/[{[]/);
+      const text = jsonStart >= 0 ? raw.slice(jsonStart) : raw;
       let parsed: unknown;
       try {
         parsed = JSON.parse(text);
@@ -87,7 +90,7 @@ async function runCliNow<T>(args: string[], opts: RunOpts = {}): Promise<T> {
         reject(
           new ZerionError(
             "parse_error",
-            `Failed to parse zerion output as JSON. First 200 chars: ${text.slice(0, 200)}`,
+            `Failed to parse zerion output as JSON. First 200 chars: ${raw.slice(0, 200)}`,
           ),
         );
         return;
