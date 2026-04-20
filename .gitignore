@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+data/
+*.db
+*.db-journal
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Submission-specific — never push
+SUBMISSION.md
