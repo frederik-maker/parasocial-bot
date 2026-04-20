@@ -13,9 +13,8 @@ data/
 # Submission-specific — never push
 SUBMISSION.md
 
-# Deck build artifacts (pptx is committed, intermediate renders are not)
+# Deck build artifacts (pptx + pdf are committed, intermediate renders are not)
 deck/slide-*.jpg
-deck/parasocial.pdf
 
 # Preview tool local config
 .claude/
