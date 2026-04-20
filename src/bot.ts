@@ -130,7 +130,7 @@ bot.command("stats", async (ctx) => {
     await ctx.reply("Usage: `/stats <0xEVM or SolanaAddress>`", { parse_mode: "Markdown" });
     return;
   }
-  await ctx.reply("Crunching their last 30 trades…");
+  await ctx.reply("Fetching PnL…");
   try {
     const score = await computeCredibility({ address: addr });
     await ctx.reply(scoreBreakdown(score, addr), { parse_mode: "Markdown" });

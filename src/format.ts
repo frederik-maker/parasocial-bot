@@ -36,23 +36,19 @@ export function alertMessage(opts: {
     `🧠 *${escapeMd(name)}* just ${verb} ${emoji} *${escapeMd(opts.trade.asset)}*`,
     `Amount: *${fmtUsd(opts.trade.usdValue)}* on ${opts.trade.chain}`,
     ``,
-    `*Their stats* ${opts.score.tier} _${opts.score.label}_`,
-    `• ${fmtPct(opts.score.realizedPnLPercent)} realized PnL`,
-    `• ${fmtPct(opts.score.overallPnLPercent)} total PnL`,
+    `• Realized PnL: ${fmtPct(opts.score.realizedPnLPercent)}`,
+    `• Total PnL: ${fmtPct(opts.score.overallPnLPercent)}`,
   ].join("\n");
 }
 
 export function scoreBreakdown(score: CredibilityScore, address: string): string {
   const lines = [
-    `*Credibility report* — ${shortAddr(address)}`,
-    ``,
-    `${score.tier} *${score.label}*`,
-    ``,
+    `*${shortAddr(address)}*`,
     `• Realized PnL: *${fmtPct(score.realizedPnLPercent)}*`,
     `• Total PnL: ${fmtPct(score.overallPnLPercent)}`,
   ];
   if (score.flags.length > 0) {
-    lines.push("", `_${score.flags.join("; ")}_`);
+    lines.push(`_${score.flags.join("; ")}_`);
   }
   return lines.join("\n");
 }
