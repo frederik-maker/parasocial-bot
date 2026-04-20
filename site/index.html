@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parasocial — copy smart money, after you know who's smart</title>
+    <meta
+      name="description"
+      content="A Telegram bot that scores any wallet's credibility, then lets you mirror their trades with one tap or DCA on a schedule. EVM + Solana, every swap gated by scoped policies."
+    />
+    <meta property="og:title" content="Parasocial — credibility-scored copy-trading" />
+    <meta
+      property="og:description"
+      content="Copy smart money onchain — after you know who's actually smart. EVM + Solana Telegram bot, built on Zerion CLI."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230a0a0a'/><text x='16' y='22' font-size='20' font-family='serif' fill='%2322c55e' text-anchor='middle' font-style='italic'>P</text></svg>"
+    />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="#top">
+        <span class="brand-mark">P</span>
+        <span class="brand-name">Parasocial</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#policies">Policies</a>
+        <a class="btn btn-sm" href="https://github.com/frederik-maker/parasocial-bot" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          Live on Base + Solana · Real onchain txs
+        </div>
+        <h1 class="display">
+          Copy smart money onchain.<br />
+          <em>After you know who's actually smart.</em>
+        </h1>
+        <p class="lede">
+          A Telegram bot that scores any wallet's credibility, then lets you mirror
+          their trades with one tap or DCA on a schedule. Every swap gated by
+          scoped policies. No god-mode agents.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://t.me/FrankRealBot" target="_blank" rel="noopener">
+            Try the bot on Telegram
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/frederik-maker/parasocial-bot" target="_blank" rel="noopener">
+            View on GitHub ↗
+          </a>
+        </div>
+
+        <!-- ALERT CARD MOCKUP -->
+        <div class="mock-wrap">
+          <div class="mock mock-telegram">
+            <div class="mock-title">
+              <span class="mock-dot"></span>
+              <span class="mock-dot"></span>
+              <span class="mock-dot"></span>
+              <span class="mock-header">Parasocial · Telegram</span>
+            </div>
+            <div class="mock-body">
+              <div class="bubble bubble-bot">
+                <div class="bubble-head">
+                  <span class="bubble-label">0xSmart...aBcD just bought</span>
+                  <span class="bubble-asset">ETH</span>
+                </div>
+                <div class="bubble-amount">$2,400 on Base</div>
+                <div class="bubble-stats">
+                  <div class="stats-row">
+                    <span class="tier tier-hot">Hot hand</span>
+                    <span class="score">score 82 / 100</span>
+                  </div>
+                  <ul class="stat-list">
+                    <li><span class="stat-k">Realized PnL</span><span class="stat-v up">+340.0%</span></li>
+                    <li><span class="stat-k">Win rate</span><span class="stat-v">73% · 19 closed</span></li>
+                    <li><span class="stat-k">On ETH</span><span class="stat-v">81% win rate</span></li>
+                    <li><span class="stat-k">Last 5</span><span class="stat-v mono">W W W L W</span></li>
+                  </ul>
+                </div>
+                <div class="bubble-buttons">
+                  <button class="btn-mock btn-mock-primary">Mirror $50</button>
+                  <button class="btn-mock">Skip</button>
+                  <button class="btn-mock">More info</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="features">
+        <div class="section-head">
+          <span class="kicker">What it does</span>
+          <h2 class="h2">Four things, one bot.</h2>
+        </div>
+        <div class="feature-grid">
+          <div class="feature">
+            <div class="feature-num">01</div>
+            <h3>Credibility scoring</h3>
+            <p>
+              Weighs realized PnL, overall win rate, asset-specific win rate, and
+              recency. Auto-flags dust-inflated wallets (e.g. vitalik.eth shows
+              −100% total but +10% realized — we score the honest signal).
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-num">02</div>
+            <h3>One-tap mirror</h3>
+            <p>
+              When a watched wallet trades, you get a scored alert and a
+              Mirror button. Tap it; bot swaps USDC → the asset on the same chain
+              through your custodial wallet. Roughly 15 seconds end-to-end.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-num">03</div>
+            <h3>DCA on a schedule</h3>
+            <p>
+              <span class="mono">/dca ETH 5 hourly base</span> — $5 into ETH every
+              hour on Base. Schedule persists in SQLite. Ticks that violate
+              policy are skipped with a clear reason; the plan keeps running.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-num">04</div>
+            <h3>Scoped policies</h3>
+            <p>
+              Six policies on every swap: max $/trade, allowed chains, slippage
+              cap, daily spend limit, cooldown, auto-mirror off by default. One
+              <span class="mono">checkPolicy()</span> call gates everything.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="how" class="how">
+        <div class="section-head">
+          <span class="kicker">Flow</span>
+          <h2 class="h2">Fund once, follow, tap.</h2>
+        </div>
+        <ol class="steps">
+          <li>
+            <div class="step-label">Step 01</div>
+            <div class="step-body">
+              <h3>Generate wallets</h3>
+              <p>
+                <span class="mono">/wallet</span> creates an EVM key and a Solana
+                keypair in one command. Both encrypted at rest with AES-256-GCM +
+                scrypt, derived per-user from a server master secret.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-label">Step 02</div>
+            <div class="step-body">
+              <h3>Fund + set your policy</h3>
+              <p>
+                Send USDC (+ a little native gas) to either address.
+                <span class="mono">/settings</span> tunes your caps — $ per trade,
+                daily spend limit, cooldown, slippage, chain lock.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-label">Step 03</div>
+            <div class="step-body">
+              <h3>Watch a wallet or DCA</h3>
+              <p>
+                <span class="mono">/watch 0x...</span> for copy-trading, or
+                <span class="mono">/dca</span> to buy on a schedule. Mirror flow
+                and DCA flow share one <span class="mono">buyAssetWithUsdc()</span>
+                primitive — same policy gate on every path.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-label">Step 04</div>
+            <div class="step-body">
+              <h3>Onchain execution</h3>
+              <p>
+                Bot fetches a quote from Zerion's <span class="mono">/swap/offers</span>,
+                approves USDC if needed, signs the tx locally with viem (EVM) or
+                ed25519 (Solana), and broadcasts. Real tx hash in ~15 seconds.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ARCHITECTURE -->
+      <section id="architecture" class="arch">
+        <div class="section-head">
+          <span class="kicker">Architecture</span>
+          <h2 class="h2">One primitive. Every path funnels through it.</h2>
+        </div>
+        <pre class="diagram">
+                 ┌─────────────────────────────────────┐
+                 │            Telegram                  │
+                 └──────────────────┬──────────────────┘
+                                    │
+                             grammy runner
+                                    │
+    ┌───────────────┬───────────────┼───────────────┬───────────────┐
+    │               │               │               │               │
+ /wallet        /watch          /dca            Mirror tap      /balance
+    │               │               │               │               │
+    ▼               ▼               ▼               ▼               ▼
+┌────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐
+│ per-   │  │  poller    │  │    dca     │  │   mirror   │  │   viem /   │
+│ user   │  │  (15 min)  │  │ scheduler  │  │  (policy)  │  │ solana RPC │
+│ wallet │  │            │  │   (30 s)   │  │            │  │            │
+│ AES-GCM│  └──────┬─────┘  └──────┬─────┘  └──────┬─────┘  └────────────┘
+└────────┘         │                │                │
+                   └────────────────┼────────────────┘
+                                    ▼
+                          ┌──────────────────┐
+                          │  buyAssetWithUsdc │  ← shared primitive
+                          │                  │
+                          │   balance →      │
+                          │   offer  →       │
+                          │   approve →      │
+                          │   sign   →       │
+                          │   broadcast      │
+                          └────────┬─────────┘
+                                   │
+                            Zerion REST
+                     /swap/offers  +  /pnl  +  history
+        </pre>
+      </section>
+
+      <!-- POLICIES -->
+      <section id="policies" class="policies">
+        <div class="section-head">
+          <span class="kicker">Scoped policies</span>
+          <h2 class="h2">Every swap, every DCA tick, gated.</h2>
+          <p class="lede lede-tight">
+            All paths funnel through one <span class="mono">checkPolicy()</span> call.
+            Rejections carry a clear reason and surface in the audit table.
+            No bypass, no god-mode agent.
+          </p>
+        </div>
+        <div class="policy-grid">
+          <div class="policy"><span class="policy-k">Max $ / trade</span><span class="policy-v">$50</span></div>
+          <div class="policy"><span class="policy-k">Daily spend limit</span><span class="policy-v">$200</span></div>
+          <div class="policy"><span class="policy-k">Chain lock</span><span class="policy-v">ethereum, base, solana</span></div>
+          <div class="policy"><span class="policy-k">Slippage cap</span><span class="policy-v">0.5%</span></div>
+          <div class="policy"><span class="policy-k">Cooldown</span><span class="policy-v">30 min</span></div>
+          <div class="policy"><span class="policy-k">Auto-mirror</span><span class="policy-v">off by default</span></div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-final">
+        <h2 class="h2">Built for the Zerion Frontier track.</h2>
+        <p class="lede">
+          Forked the Zerion CLI, added per-user custody via viem + Solana web3,
+          a credibility-scoring engine, a Telegram front-end, and a DCA scheduler.
+          Open source.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/frederik-maker/parasocial-bot" target="_blank" rel="noopener">
+            Read the code on GitHub
+          </a>
+          <a class="btn btn-ghost" href="https://t.me/FrankRealBot" target="_blank" rel="noopener">
+            Try @FrankRealBot
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <span>Parasocial · Built for Colosseum Frontier × Zerion</span>
+        <span>
+          <a href="https://github.com/frederik-maker/parasocial-bot">GitHub</a>
+          &nbsp;·&nbsp;
+          <a href="https://t.me/FrankRealBot">Telegram</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>
