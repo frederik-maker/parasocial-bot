@@ -1,5 +1,4 @@
-import { getHistory } from "./zerion.js";
-import { getPnlRest } from "./rest.js";
+import { getPnlRest, getTransactionsRest } from "./rest.js";
 import { logger } from "./logger.js";
 import type { Address, CredibilityScore, DetectedTrade, Transaction } from "./types.js";
 
@@ -140,15 +139,18 @@ function outcomeFor(trade: DetectedTrade): "✅" | "❌" | "➖" {
 
 export async function computeCredibility(input: CredibilityInput): Promise<CredibilityScore> {
   const limit = input.sampleSize ?? 30;
-  // History goes through the rate-limited CLI wrapper; PnL goes via REST
-  // (richer response — includes realized-gain %).
-  const history = await getHistory(input.address, { limit });
-  const pnl = await getPnlRest(input.address).catch((err) => {
-    logger.warn(`getPnlRest failed for ${input.address}: ${err instanceof Error ? err.message : err}`);
-    return null;
-  });
+  const [txs, pnl] = await Promise.all([
+    getTransactionsRest(input.address, limit).catch((err) => {
+      logger.warn(`getTransactionsRest failed for ${input.address}: ${err instanceof Error ? err.message : err}`);
+      return [] as import("./types.js").Transaction[];
+    }),
+    getPnlRest(input.address).catch((err) => {
+      logger.warn(`getPnlRest failed for ${input.address}: ${err instanceof Error ? err.message : err}`);
+      return null;
+    }),
+  ]);
 
-  const trades = extractTrades(history.transactions).map((t) => ({ ...t, address: input.address }));
+  const trades = extractTrades(txs).map((t) => ({ ...t, address: input.address }));
 
   const { winRate, sample } = closedTradeWinRate(trades);
 

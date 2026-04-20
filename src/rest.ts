@@ -172,6 +172,54 @@ export async function resolveNativeFungibleId(
   return hit.id;
 }
 
+// ── Transaction history via REST (supports EVM + Solana) ─
+
+interface RestTransfer {
+  fungible_info?: { symbol?: string };
+  direction?: string;
+  quantity?: { float?: number };
+  value?: number;
+}
+
+interface RestTx {
+  attributes: {
+    operation_type?: string;
+    hash?: string;
+    status?: string;
+    mined_at?: string;
+    transfers?: RestTransfer[];
+    fee?: { value?: number };
+  };
+  relationships?: { chain?: { data?: { id?: string } } };
+}
+
+import type { Transaction } from "./types.js";
+
+export async function getTransactionsRest(address: string, limit = 30): Promise<Transaction[]> {
+  const json = await get<{ data: RestTx[] }>(`/wallets/${address.toLowerCase()}/transactions`, {
+    "page[size]": limit,
+    "filter[trash]": "only_non_trash",
+  });
+  return (json.data ?? []).map((tx) => {
+    const a = tx.attributes;
+    const chain = tx.relationships?.chain?.data?.id ?? "unknown";
+    return {
+      hash: a.hash ?? "",
+      type: a.operation_type ?? "unknown",
+      status: a.status ?? "confirmed",
+      timestamp: a.mined_at ?? new Date(0).toISOString(),
+      chain,
+      fee: a.fee?.value ?? null,
+      transfers: (a.transfers ?? []).map((t) => ({
+        direction: (t.direction === "in" || t.direction === "out" ? t.direction : "self") as "in" | "out" | "self",
+        fungible: t.fungible_info?.symbol ?? null,
+        quantity: t.quantity?.float ?? null,
+        value: t.value ?? null,
+      })),
+    };
+  });
+}
+
 // ── USD price fetcher (short cache) ──────────────────────
 
 interface FungibleDetail {
