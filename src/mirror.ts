@@ -175,6 +175,14 @@ export async function mirrorTrade(req: MirrorRequest): Promise<MirrorEvent> {
   }
 
   // ── 2. Resolve target token ─────────────────────────────
+  // Catch same-token no-op before hitting Zerion (e.g. DCA ETH funded with ETH).
+  if (req.asset.toUpperCase() === chain.nativeSymbol.toUpperCase() && src.kind === "native") {
+    return reject(
+      "rejected",
+      `Can't buy ${req.asset} with ${chain.nativeSymbol} — same token. Fund with USDC instead.`,
+    );
+  }
+
   let toFungibleId: string;
   try {
     const hit = await findFungibleBySymbol(req.asset, req.chain);
