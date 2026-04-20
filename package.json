@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "setup": "tsx scripts/setup.ts"
@@ -19,13 +19,13 @@
     "bs58": "^6.0.0",
     "dotenv": "^16.4.5",
     "grammy": "^1.30.0",
+    "tsx": "^4.19.0",
     "viem": "^2.21.0",
     "zerion-cli": "^0.4.2"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^22.10.0",
-    "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   },
   "engines": {
